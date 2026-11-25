@@ -19,10 +19,10 @@
 <style>
 /* VOICE everyday and personal: a music lover's crate, confident and unfussy
    IDEA a wall planner of record sleeves; each month's Spotify cover re-set as an 8x8 tile mosaic
-   PICTURE six seasons of mosaic sleeves, three months to a season, filling the first screen
+   PICTURE each year (June to May) as four seasons of mosaic sleeves, closed by its year-end compilation
    COLOUR white paper by day, deep violet at night; the covers bring every other colour; sticker yellow marks the latest
    TYPE Archivo condensed 800 for months and titles, Archivo 400 for text
-   LAYOUT laptop: title row, then two rows of three seasons; 720px: two seasons a row; phone: one season a row, three tiles */
+   LAYOUT laptop: a year is a 2x2 block of seasons with the year-end playlist standing tall at its right; 720px: the compilation drops below; phone: one season a row */
 :root{--bg:#ffffff;--ink:#18161f;--mute:#5d5869;--line:#e6e3ec;--soft:#f5f3f8;--chip:#eeebf3;--grout:#ffffff;--stk:#ffe14d;--stk-ink:#18161f;--f:"Archivo","Helvetica Neue",Arial,sans-serif;color-scheme:light dark}
 @media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#15121e;--ink:#f4f1fa;--mute:#aaa3bb;--line:#2c2639;--soft:#1d1929;--chip:#272135;--grout:#15121e}}
 :root[data-theme=dark]{color-scheme:dark;--bg:#15121e;--ink:#f4f1fa;--mute:#aaa3bb;--line:#2c2639;--soft:#1d1929;--chip:#272135;--grout:#15121e}
@@ -47,9 +47,23 @@ h1{font:800 clamp(44px,7vw,76px)/.95 var(--f);font-stretch:72%;letter-spacing:-.
 .pill svg{width:20px;height:20px;flex:none}
 .pill.now{background:var(--stk);color:var(--stk-ink);border-color:var(--stk)}
 .cal{padding-top:8px}
-.seasons{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:32px 28px}
-.season h2{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin:0 0 12px;padding-bottom:8px;border-bottom:1.5px solid var(--ink);font:750 16px/1.2 var(--f)}
-.season h2 small{font-weight:400;font-size:13px;color:var(--mute);white-space:nowrap}
+.years{display:grid;gap:clamp(44px,5vw,72px)}
+.yhead{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 20px;margin-bottom:18px}
+.yhead h2{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 16px;margin:0;font-weight:400}
+.yn{font:800 clamp(38px,4.8vw,54px)/1 var(--f);font-stretch:72%;letter-spacing:-.02em}
+.yr,.ys{color:var(--mute);font-size:16px;white-space:nowrap}
+.ygrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr)) minmax(0,.72fr);gap:30px 28px}
+.ygrid.nocomp{grid-template-columns:repeat(2,minmax(0,1fr))}
+.comp{grid-column:3;grid-row:1/span 2;display:flex;flex-direction:column;justify-content:space-between;gap:14px;padding:14px;border:1.5px solid var(--ink);border-radius:14px;background:var(--soft);text-align:left;cursor:pointer}
+.comp:hover{background:var(--chip)}
+.comp .strip{height:auto;aspect-ratio:1;width:100%}
+.cn{display:block;font:800 clamp(24px,2.4vw,30px)/1.05 var(--f);font-stretch:74%;letter-spacing:-.01em}
+.cs{display:block;margin-top:4px;color:var(--mute);font-size:14px}
+.comp.ghostc{border:1.5px dashed var(--line);background:none;cursor:default}
+.comp.ghostc .strip{background:none;border:1.5px dashed var(--line)}
+.comp.ghostc .cn{color:var(--mute)}
+.season h3{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin:0 0 12px;padding-bottom:8px;border-bottom:1.5px solid var(--ink);font:750 16px/1.2 var(--f)}
+.season h3 small{font-weight:400;font-size:13px;color:var(--mute);white-space:nowrap}
 .months{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
 .tile{position:relative;display:flex;flex-direction:column;align-items:stretch;gap:0;padding:0;border:0;background:none;text-align:left;cursor:pointer;border-radius:10px}
 .tile:hover .mos{transform:translateY(-3px)}
@@ -61,14 +75,9 @@ h1{font:800 clamp(44px,7vw,76px)/.95 var(--f);font-stretch:72%;letter-spacing:-.
 .ghost .mos{background:none;border:1.5px dashed var(--line)}
 .ghost .tl{color:var(--mute)}
 .stk{position:absolute;top:-10px;right:-8px;display:grid;place-items:center;width:52px;height:52px;border-radius:50%;background:var(--stk);color:var(--stk-ink);font:800 13px/1 var(--f);font-stretch:85%;transform:rotate(12deg);box-shadow:0 2px 0 rgba(0,0,0,.18);pointer-events:none}
-.extra{display:grid;grid-template-columns:minmax(0,300px) minmax(0,1fr) auto;align-items:center;gap:20px 28px;width:100%;margin-top:36px;padding:16px;border:1.5px solid var(--line);border-radius:14px;background:var(--soft);text-align:left;cursor:pointer}
-.extra:hover{border-color:var(--ink)}
 .strip{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:1px;height:72px;border-radius:8px;overflow:hidden;background:var(--grout)}
 .strip span{display:grid;grid-template-rows:repeat(8,minmax(0,1fr))}
 .strip i{display:block}
-.xt strong{display:block;font:800 26px/1.05 var(--f);font-stretch:75%}
-.xt span{color:var(--mute)}
-.go{font-weight:650;white-space:nowrap}
 .h{font:800 clamp(30px,4.4vw,46px)/1.05 var(--f);font-stretch:74%;letter-spacing:-.02em;margin:0;text-wrap:balance;max-width:20em}
 .sub{margin:10px 0 0;color:var(--mute);max-width:44em}
 .find .row{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:16px 32px}
@@ -129,6 +138,7 @@ dialog::backdrop{background:rgba(12,10,20,.62)}
 .sh-art{position:relative;align-self:start}
 .sh-art img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;border-radius:10px;opacity:0;transition:opacity .7s}
 .sh-art img.on{opacity:1}
+.sh-art .strip{height:auto;aspect-ratio:1;border-radius:10px}
 .mos.big{border-radius:10px;gap:2px}
 .mos.big i{animation:px .5s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--d) * 26ms)}
 @keyframes px{from{opacity:0;transform:scale(.3)}}
@@ -140,6 +150,17 @@ dialog::backdrop{background:rgba(12,10,20,.62)}
 .btn svg{width:22px;height:22px;flex:none}
 .btn.sp{background:var(--ink);color:var(--bg)}
 .btn.off{border-style:dashed;border-color:var(--line);color:var(--mute)}
+.chip.mid{background:none;border:1.5px solid var(--line)}
+.chip.mid:hover{border-color:var(--ink);background:var(--ink)}
+.keep{padding:0 24px 22px}
+.keep h3{margin:0 0 4px;font-size:17px}
+.keep p{margin:0 0 12px;color:var(--mute);font-size:14px}
+.krow{display:grid;grid-template-columns:4.2em minmax(0,1fr) 5.6em;align-items:center;gap:10px;min-height:28px;font-size:14px}
+.krow button{all:unset;cursor:pointer;font-weight:650}
+.krow button:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+.kb{height:12px;border-radius:6px;background:var(--chip);overflow:hidden}
+.kb i{display:block;height:100%;border-radius:6px;background:var(--ink)}
+.kv{color:var(--mute);text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
 .rpt{margin:16px 0 0;font-size:15px}
 .rpt b{font-weight:650}
 .rpt .x{color:var(--mute)}
@@ -163,9 +184,9 @@ dialog::backdrop{background:rgba(12,10,20,.62)}
 .yts{display:grid;place-items:center;width:44px;height:44px;border-radius:50%}
 .yts:hover{background:var(--chip)}
 .yts svg{width:20px;height:20px}
-@media (max-width:1000px){.seasons{grid-template-columns:repeat(2,minmax(0,1fr))}.extra{grid-template-columns:minmax(0,220px) minmax(0,1fr)}.extra .go{grid-column:1/-1}}
+@media (max-width:1000px){.ygrid{grid-template-columns:repeat(2,minmax(0,1fr))}.comp{grid-column:1/-1;grid-row:auto;flex-direction:row;align-items:center;justify-content:flex-start;gap:18px}.comp .strip{width:min(40%,200px);flex:none}}
 @media (max-width:640px){.sh-hero{grid-template-columns:minmax(0,1fr);gap:20px;padding:18px 16px}.sh-art{width:min(100%,300px)}.player{padding:0 16px 16px}.tracks{padding:0 16px 24px}.note{margin:0 16px 16px}.figs{grid-template-columns:repeat(2,minmax(0,1fr))}.figs div{padding-bottom:12px}}
-@media (max-width:600px){.seasons{grid-template-columns:minmax(0,1fr);gap:28px}.extra{grid-template-columns:minmax(0,1fr)}.strip{height:56px}dialog{width:100%;max-width:100%;height:100%;max-height:100%;margin:0;border:0;border-radius:0}.bar .v{display:none}.bar.keep .v{display:block}.tracks li{grid-template-columns:1.6em minmax(0,1fr) 44px}.tracks .du{display:none}}
+@media (max-width:600px){.ygrid{grid-template-columns:minmax(0,1fr);gap:28px}.comp .strip{width:44%}.keep{padding:0 16px 18px}dialog{width:100%;max-width:100%;height:100%;max-height:100%;margin:0;border:0;border-radius:0}.bar .v{display:none}.bar.keep .v{display:block}.tracks li{grid-template-columns:1.6em minmax(0,1fr) 44px}.tracks .du{display:none}}
 @media (max-width:600px){.d1{width:5px;height:5px}.d2{width:7px;height:7px}.d3{width:9px;height:9px}}
 @media (prefers-reduced-motion:reduce){.mos,.sh-art img{transition:none}.mos.big i{animation:none}}
 </style>
@@ -197,8 +218,7 @@ dialog::backdrop{background:rgba(12,10,20,.62)}
   <section class="band cal" aria-labelledby="cal-h">
     <div class="wrap">
       <h2 class="vh" id="cal-h">Playlist calendar</h2>
-      <div id="seasons" class="seasons"><p class="err">Loading playlists…</p></div>
-      <div id="extras"></div>
+      <div id="years" class="years"><p class="err">Loading playlists…</p></div>
     </div>
   </section>
 
@@ -279,13 +299,24 @@ const norm = s => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 const store = {get: k => { try { return localStorage.getItem(k); } catch (e) { return null; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} }};
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const icon = id => `<svg aria-hidden="true"><use href="#i-${id}"/></svg>`;
+const isKey = k => /^\d{4}-(0[1-9]|1[0-2])$/.test(k || '');
 const labelFor = k => `${MON[+k.slice(5) - 1]}'${yy(k.slice(0, 4))}`;
-const slugOf = k => /^\d{4}-\d{2}$/.test(k) ? `${MON[+k.slice(5) - 1].toLowerCase()}-${yy(k.slice(0, 4))}` : k;
+const slugOf = k => isKey(k) ? `${MON[+k.slice(5) - 1].toLowerCase()}-${yy(k.slice(0, 4))}` : k;
+const addMonths = (k, n) => { const t = +k.slice(0, 4) * 12 + (+k.slice(5) - 1) + n; return `${Math.floor(t / 12)}-${String(t % 12 + 1).padStart(2, '0')}`; };
 const spList = id => `https://open.spotify.com/playlist/${sid(id)}`;
 const ytList = id => `https://www.youtube.com/playlist?list=${sid(id)}`;
+const clean = list => (Array.isArray(list) ? list : []).filter(Array.isArray).map(t => [String(t[0]), String(t[1] ?? ''), (Array.isArray(t[2]) ? t[2] : [t[2]]).map(String), Math.max(0, Number(t[3]) || 0)]);
 
-let months = [], extras = [], index = [];
-const byKey = new Map(), bySlug = new Map(), where = new Map();
+let months = [], comps = [], index = [], START = 6;
+const byKey = new Map(), bySlug = new Map(), where = new Map(), compOf = new Map();
+const yearOf = k => +k.slice(5) >= START ? +k.slice(0, 4) : +k.slice(0, 4) - 1;
+const yearLabel = y => `${yy(y)}'${yy(y + 1)}`;
+const yearFirst = y => `${y}-${String(START).padStart(2, '0')}`;
+function seasonName(k) {
+  const y = +k.slice(0, 4), m = +k.slice(5);
+  if (m === 12 || m <= 2) { const s = m === 12 ? y : y - 1; return `Winter '${yy(s)}–${yy(s + 1)}`; }
+  return `${m <= 5 ? 'Spring' : m <= 8 ? 'Summer' : 'Fall'} '${yy(y)}`;
+}
 
 function colorsOf(m) {
   if (/^[0-9a-f]{384}$/i.test(m.pixels || '')) return Array.from({length: 64}, (_, i) => '#' + m.pixels.slice(i * 6, i * 6 + 6));
@@ -294,24 +325,18 @@ function colorsOf(m) {
 }
 const spine = m => { const c = colorsOf(m); return [0, 1, 2, 3, 4, 5, 6, 7].map(r => c[r * 8 + (r * 3) % 8]); };
 const mosaic = (m, cls = '') => `<span class="mos${cls}" aria-hidden="true">${colorsOf(m).map((c, i) => `<i style="background:${c};--d:${i % 8 + (i >> 3)}"></i>`).join('')}</span>`;
-
-function seasonOf(k) {
-  const y = +k.slice(0, 4), m = +k.slice(5), key = (a, b) => `${a}-${String(b).padStart(2, '0')}`;
-  if (m === 12 || m <= 2) { const s = m === 12 ? y : y - 1; return {id: 'w' + s, name: `Winter '${yy(s)}–${yy(s + 1)}`, keys: [key(s, 12), key(s + 1, 1), key(s + 1, 2)]}; }
-  const [name, f] = m <= 5 ? ['Spring', 3] : m <= 8 ? ['Summer', 6] : ['Fall', 9];
-  return {id: name + y, name: `${name} '${yy(y)}`, keys: [key(y, f), key(y, f + 1), key(y, f + 2)]};
-}
+const strip = ms => `<span class="strip" aria-hidden="true">${ms.map(m => `<span>${spine(m).map(c => `<i style="background:${c}"></i>`).join('')}</span>`).join('')}</span>`;
+const inComp = c => months.filter(m => m.key >= c.from && m.key <= c.to);
 
 function init(d) {
-  months = (d.months || []).filter(m => m && /^\d{4}-\d{2}$/.test(m.key) && m.spotify).sort((a, b) => a.key.localeCompare(b.key));
-  months.forEach(m => {
-    m.label = String(m.label || labelFor(m.key));
-    m.tracks = (Array.isArray(m.tracks) ? m.tracks : []).filter(Array.isArray).map(t => [String(t[0]), String(t[1] ?? ''), (Array.isArray(t[2]) ? t[2] : [t[2]]).map(String), Math.max(0, Number(t[3]) || 0)]);
-    byKey.set(m.key, m); bySlug.set(slugOf(m.key), m.key);
-  });
-  extras = (d.extras || []).filter(x => x && x.key && x.spotify).map(x => ({...x, key: sid(x.key).toLowerCase(), label: String(x.label || x.key), songs: Number(x.songs) || 0, tracks: null}));
-  extras.forEach(x => bySlug.set(x.key, x.key));
+  START = Math.min(12, Math.max(1, Math.round(Number(d.yearStarts)) || 6));
+  months = (d.months || []).filter(m => m && isKey(m.key) && m.spotify).sort((a, b) => a.key.localeCompare(b.key));
   if (!months.length) throw new Error('no months');
+  months.forEach(m => { m.label = labelFor(m.key); m.tracks = clean(m.tracks); byKey.set(m.key, m); bySlug.set(slugOf(m.key), m.key); });
+  comps = (d.compilations || []).filter(c => c && c.key && c.spotify && isKey(c.from) && isKey(c.to))
+    .map(c => ({...c, key: sid(c.key).toLowerCase(), label: String(c.name || c.key), tracks: clean(c.tracks), songs: Number(c.songs) || 0, isComp: true}))
+    .sort((a, b) => a.from.localeCompare(b.from));
+  comps.forEach(c => { c.songs = Math.max(c.songs, c.tracks.length); c.ids = new Set(c.tracks.map(t => t[0])); bySlug.set(c.key, c.key); inComp(c).forEach(m => compOf.set(m.key, c)); });
   const seen = new Map();
   for (const m of months) for (const t of m.tracks) {
     let e = seen.get(t[0]);
@@ -323,29 +348,36 @@ function init(d) {
   [['#l-sp', L.spotify], ['#l-yt', L.youtube], ['#l-ig', L.instagram]].forEach(([s, u]) => { if (/^https:\/\//.test(u || '')) $(s).href = u; });
   if (d.updated && /^\d{4}-\d{2}-\d{2}$/.test(d.updated)) { const [y, m, day] = d.updated.split('-').map(Number); $('#updated').textContent = `Updated ${MONTH[m - 1]} ${day}, ${y}`; }
   const last = months.at(-1), lb = $('#latest');
-  lb.innerHTML = `Latest: ${esc(last.label)}`; lb.hidden = false; lb.onclick = () => openFromUI(last.key);
+  lb.textContent = `Latest: ${last.label}`; lb.hidden = false; lb.onclick = () => openFromUI(last.key);
   renderCalendar(); renderStats(); renderArtists(); renderRepeats();
   $('#find-sub').textContent = `Search all ${plural(index.length, 'song')} by title or artist to see which month they landed in.`;
   route();
 }
 
+function tileHTML(k, last) {
+  const m = byKey.get(k);
+  if (!m) return `<div class="tile ghost" aria-hidden="true"><span class="mos"></span><span class="tl">${labelFor(k)}</span><span class="ts">${k > last ? 'coming up' : '&nbsp;'}</span></div>`;
+  const ct = m.tracks.length ? plural(m.tracks.length, 'song') : 'new';
+  return `<button class="tile" type="button" data-k="${m.key}" aria-label="${esc(m.label)}, ${ct}">${mosaic(m)}${k === last ? '<span class="stk">latest</span>' : ''}<span class="tl">${esc(m.label)}</span><span class="ts">${ct}</span></button>`;
+}
+
 function renderCalendar() {
-  const blocks = [];
-  for (const m of months) { const s = seasonOf(m.key); if (!blocks.length || blocks.at(-1).id !== s.id) blocks.push(s); }
-  const last = months.at(-1).key;
-  $('#seasons').innerHTML = blocks.map(s => {
-    const n = s.keys.reduce((a, k) => a + (byKey.get(k)?.tracks.length || 0), 0);
-    return `<section class="season" aria-label="${esc(s.name)}"><h2>${esc(s.name)}<small>${plural(n, 'song')}</small></h2><div class="months">${s.keys.map(k => {
-      const m = byKey.get(k);
-      if (!m) return `<div class="tile ghost" aria-hidden="true"><span class="mos"></span><span class="tl">${labelFor(k)}</span><span class="ts">${k > last ? 'coming up' : '&nbsp;'}</span></div>`;
-      const ct = m.tracks.length ? plural(m.tracks.length, 'song') : 'new';
-      return `<button class="tile" type="button" data-k="${m.key}" aria-label="${esc(m.label)}, ${ct}">${mosaic(m)}${k === last ? '<span class="stk">latest</span>' : ''}<span class="tl">${esc(m.label)}</span><span class="ts">${ct}</span></button>`;
-    }).join('')}</div></section>`;
-  }).join('');
-  $('#extras').innerHTML = extras.map(x => `<button class="extra" type="button" data-k="${x.key}">
-    <span class="strip" aria-hidden="true">${months.map(m => `<span>${spine(m).map(c => `<i style="background:${c}"></i>`).join('')}</span>`).join('')}</span>
-    <span class="xt"><strong>${esc(x.label)}</strong><span>${x.songs ? plural(x.songs, 'song') + ' in one long playlist' : 'One long playlist'}${x.youtube ? ', on Spotify and YouTube' : ''}.</span></span>
-    <span class="go">See it</span></button>`).join('');
+  const last = months.at(-1).key, y0 = yearOf(months[0].key), y1 = yearOf(last);
+  const nextName = y => { const m = comps.length && comps.at(-1).label.match(/^(.*?)(\d\d)'(\d\d)$/); return m ? `${m[1]}${yy(y)}'${yy(y + 1)}` : `Year-end ${yearLabel(y)}`; };
+  let html = '';
+  for (let y = y0; y <= y1; y++) {
+    const keys = Array.from({length: 12}, (_, i) => addMonths(yearFirst(y), i));
+    const n = keys.reduce((a, k) => a + (byKey.get(k)?.tracks.length || 0), 0);
+    const c = comps.find(c => yearOf(c.from) === y);
+    const seasons = [0, 3, 6, 9].map(i => keys.slice(i, i + 3)).map(ks => {
+      const sn = ks.reduce((a, k) => a + (byKey.get(k)?.tracks.length || 0), 0), name = seasonName(ks[0]);
+      return `<section class="season" aria-label="${esc(name)}"><h3>${esc(name)}<small>${sn ? plural(sn, 'song') : ''}</small></h3><div class="months">${ks.map(k => tileHTML(k, last)).join('')}</div></section>`;
+    }).join('');
+    const end = c ? `<button class="comp" type="button" data-k="${c.key}" aria-label="${esc(c.label)}, year-end playlist, ${plural(c.songs, 'song')}">${strip(inComp(c))}<span><span class="cn">${esc(c.label)}</span><span class="cs">Year-end playlist, ${plural(c.songs, 'song')}</span></span></button>`
+      : comps.length ? `<div class="comp ghostc" aria-hidden="true"><span class="strip"></span><span><span class="cn">${esc(nextName(y))}</span><span class="cs">Year-end playlist, after ${labelFor(keys[11])}</span></span></div>` : '';
+    html += `<section class="year" aria-labelledby="y${y}"><div class="yhead"><h2 id="y${y}"><span class="yn">${yearLabel(y)}</span><span class="yr">${labelFor(keys[0])}–${labelFor(keys[11])}</span></h2><span class="ys">${plural(n, 'song')}${keys[11] > last ? ' so far' : ''}</span></div><div class="ygrid${end ? '' : ' nocomp'}">${seasons}${end}</div></section>`;
+  }
+  $('#years').innerHTML = html;
 }
 
 function renderStats() {
@@ -353,9 +385,10 @@ function renderStats() {
   const secs = months.reduce((a, m) => a + m.tracks.reduce((b, t) => b + t[3], 0), 0);
   const artists = new Set(months.flatMap(m => m.tracks.flatMap(t => t[2])));
   const yrs = new Map();
-  months.forEach(m => { const y = m.key.slice(0, 4), e = yrs.get(y) || {n: 0, c: 0}; e.n += m.tracks.length; e.c++; yrs.set(y, e); });
-  const ys = [...yrs], avg = e => Math.round(e.n / e.c);
-  $('#num-h').textContent = ys.length > 1 ? `From ${avg(ys[0][1])} songs a month in ${ys[0][0]} to ${avg(ys.at(-1)[1])} in ${ys.at(-1)[0]}` : `${avg(ys[0][1])} songs a month`;
+  months.forEach(m => { const y = yearOf(m.key), e = yrs.get(y) || {n: 0, c: 0}; e.n += m.tracks.length; e.c++; yrs.set(y, e); });
+  const ys = [...yrs].sort((a, b) => a[0] - b[0]), avg = e => Math.round(e.n / e.c), ly = ys.at(-1);
+  const partial = addMonths(yearFirst(ly[0]), 11) > months.at(-1).key;
+  $('#num-h').textContent = ys.length > 1 ? `From ${avg(ys[0][1])} songs a month in ${yearLabel(ys[0][0])} to ${avg(ly[1])} in ${yearLabel(ly[0])}${partial ? ' so far' : ''}` : `${avg(ys[0][1])} songs a month`;
   $('#figs').innerHTML = [[adds, 'songs added'], [Math.round(secs / 3600), 'hours of music'], [artists.size, 'artists'], [months.length, 'monthly playlists']]
     .map(([n, l]) => `<div><b>${n.toLocaleString('en-US')}</b><span>${l}</span></div>`).join('');
   const max = Math.max(1, ...months.map(m => m.tracks.length)), top = Math.max(25, Math.ceil(max / 25) * 25);
@@ -366,7 +399,7 @@ function renderStats() {
     const n = m.tracks.length, st = spine(m), keep = n === max || i === months.length - 1;
     return `<button class="bar${keep ? ' keep' : ''}" type="button" data-k="${m.key}" style="--h:${n / top * 100}%" aria-label="${esc(m.label)}: ${plural(n, 'song')}"><span class="v">${n}</span><span class="sp" style="background:linear-gradient(to top,${st.map((c, j) => `${c} ${j * 12.5}% ${(j + 1) * 12.5}%`).join(',')})"></span></button>`;
   }).join('');
-  $('#xax').innerHTML = months.map((m, i) => { const mo = +m.key.slice(5), ny = i === 0 || mo === 1; return `<span>${MON[mo - 1][0]}${ny ? `<em>${m.key.slice(0, 4)}</em>` : ''}</span>`; }).join('');
+  $('#xax').innerHTML = months.map((m, i) => { const mo = +m.key.slice(5), ny = i === 0 || mo === START; return `<span>${MON[mo - 1][0]}${ny ? `<em>${yearLabel(yearOf(m.key))}</em>` : ''}</span>`; }).join('');
 }
 
 function renderArtists() {
@@ -379,7 +412,7 @@ function renderArtists() {
   $('#sugg').innerHTML = 'Try' + list.slice(0, 5).map(e => `<button class="chip" type="button" data-act="q" data-q="${esc(e.name)}">${esc(e.name)}</button>`).join('');
   $('#art-sub').textContent = `${plural(list.length, 'artist')} made three or more monthly playlists. Bigger dots mean more songs that month; tap a name to find them on Spotify.`;
   const mx = $('#mx'); mx.style.gridTemplateColumns = `minmax(${innerWidth < 600 ? '7.5em' : '9em'},13em) repeat(${months.length},minmax(${innerWidth < 600 ? 11 : 14}px,1fr))`;
-  const yr = i => i > 0 && months[i].key.slice(5) === '01' ? ' yr' : '';
+  const yr = i => i > 0 && +months[i].key.slice(5) === START ? ' yr' : '';
   mx.innerHTML = `<span class="hd nm"></span>` + months.map((m, i) => `<span class="hd${yr(i)}">${MON[+m.key.slice(5) - 1][0]}</span>`).join('') +
     list.map(e => `<span class="nm"><a href="https://open.spotify.com/search/${encodeURIComponent(e.name)}/artists" target="_blank" rel="noopener">${esc(e.name)}</a><small>${e.m}</small></span>` +
       e.per.map((c, i) => `<span class="${yr(i).trim()}">${c ? `<i class="dot d${Math.min(c, 3)}" title="${esc(e.name)}: ${plural(c, 'song')} in ${esc(months[i].label)}"></i>` : ''}</span>`).join('')).join('');
@@ -409,51 +442,64 @@ $('#q').addEventListener('input', () => { clearTimeout(qt); qt = setTimeout(sear
 
 const dlg = $('#sheet');
 let current = null, pushed = false;
+const find = k => byKey.get(k) || comps.find(c => c.key === k);
 
 function buttonsFor(m) {
   return `<a class="btn sp" href="${spList(m.spotify)}" target="_blank" rel="noopener">${icon('sp')}Open in Spotify</a>` +
     (m.youtube ? `<a class="btn" href="${ytList(m.youtube)}" target="_blank" rel="noopener">${icon('yt')}Open in YouTube</a>` : `<span class="btn off">${icon('yt')}Not on YouTube yet</span>`);
 }
 
+function trackList(m, chips) {
+  return `<ol class="tracks">${m.tracks.map((t, i) => `<li id="t-${sid(t[0])}"><span class="no">${i + 1}</span><span class="tt"><a href="https://open.spotify.com/track/${sid(t[0])}" target="_blank" rel="noopener">${esc(t[1])}</a><span class="ar">${esc(t[2].join(', '))}</span>${chips(t)}</span><span class="du">${mmss(t[3])}</span><a class="yts" href="https://www.youtube.com/results?search_query=${encodeURIComponent(`${t[1]} ${t[2].join(' ')}`)}" target="_blank" rel="noopener" aria-label="Find ${esc(t[1])} on YouTube">${icon('yt')}</a></li>`).join('')}</ol>`;
+}
+
 function sheetHTML(m) {
-  const isMonth = Array.isArray(m.tracks);
-  let meta = '', art = '', rpt = '', list = '';
-  if (isMonth) {
-    const secs = m.tracks.reduce((a, t) => a + t[3], 0), y = m.key.slice(0, 4), mo = +m.key.slice(5);
-    meta = `<span>${MONTH[mo - 1]} ${y}</span><span>${plural(m.tracks.length, 'song')}</span>${secs ? `<span>${long(secs)}</span>` : ''}${m.youtube && m.youtubeCount ? `<span>${plural(m.youtubeCount, 'video')} on YouTube</span>` : ''}`;
+  const secs = m.tracks.reduce((a, t) => a + t[3], 0);
+  let art, meta, extra = '', list;
+  if (m.isComp) {
+    const ms = inComp(m);
+    meta = `<span>${labelFor(m.from)}–${labelFor(m.to)}</span><span>${plural(m.songs, 'song')}</span>${secs ? `<span>${long(secs)}</span>` : ''}`;
+    art = `<div class="sh-art">${strip(ms)}</div>`;
+    const rows = ms.map(x => ({m: x, kept: x.tracks.filter(t => m.ids.has(t[0])).length, n: x.tracks.length}));
+    const whole = rows.filter(r => r.n && r.kept === r.n).map(r => r.m.label), most = [...rows].sort((a, b) => b.kept - a.kept)[0];
+    const line = [whole.length ? `All of ${whole.join(' and ')} made it.` : '', most && most.kept ? `${most.m.label} gave the most: ${most.kept}.` : ''].filter(Boolean).join(' ');
+    extra = rows.length ? `<div class="keep"><h3>Kept from each month</h3><p>${esc(line)}</p>${rows.map(r => `<div class="krow"><button type="button" data-act="go" data-k="${r.m.key}">${esc(r.m.label)}</button><span class="kb"><i style="width:${r.n ? r.kept / r.n * 100 : 0}%"></i></span><span class="kv">${r.kept} of ${r.n}</span></div>`).join('')}</div>` : '';
+    const from = t => (where.get(t[0]) || []).filter(k => k >= m.from && k <= m.to);
+    list = m.tracks.length ? (m.tracks.length < m.songs ? `<p class="note">Showing the first ${m.tracks.length} of ${m.songs} songs.</p>` : '') + trackList(m, t => from(t).map(k => `<button class="chip" type="button" data-act="go" data-k="${k}" data-t="${sid(t[0])}">from ${esc(byKey.get(k).label)}</button>`).join(''))
+      : `<p class="note">The full list lives on Spotify and YouTube.</p>`;
+  } else {
+    const y = m.key.slice(0, 4), mo = +m.key.slice(5), c = compOf.get(m.key), kept = c ? m.tracks.filter(t => c.ids.has(t[0])).length : 0;
+    meta = `<span>${MONTH[mo - 1]} ${y}</span><span>${plural(m.tracks.length, 'song')}</span>${secs ? `<span>${long(secs)}</span>` : ''}${kept ? `<span>${kept} made ${esc(c.label)}</span>` : ''}`;
     const cover = /^https:\/\/([a-z0-9-]+\.)*(scdn\.co|spotifycdn\.com)\/[^\s"'<>]+$/i.test(m.cover || '') ? m.cover : '';
     art = `<div class="sh-art">${mosaic(m, ' big')}${RICH && cover ? `<img alt="" src="${esc(cover)}">` : ''}</div>`;
     const cnt = new Map(); m.tracks.forEach(t => t[2].forEach(a => cnt.set(a, (cnt.get(a) || 0) + 1)));
     const top = [...cnt].filter(([, n]) => n > 1).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, 5);
-    rpt = top.length ? `<p class="rpt"><b>On repeat:</b> ${top.map(([a, n]) => `${esc(a)} <span class="x">×${n}</span>`).join(', ')}</p>` : '';
-    list = m.tracks.length ? `<ol class="tracks">${m.tracks.map((t, i) => {
-      const others = (where.get(t[0]) || []).filter(k => k !== m.key);
-      return `<li id="t-${sid(t[0])}"><span class="no">${i + 1}</span><span class="tt"><a href="https://open.spotify.com/track/${sid(t[0])}" target="_blank" rel="noopener">${esc(t[1])}</a><span class="ar">${esc(t[2].join(', '))}</span>${others.map(k => `<button class="chip" type="button" data-act="go" data-k="${k}" data-t="${sid(t[0])}">also in ${esc(byKey.get(k).label)}</button>`).join('')}</span><span class="du">${mmss(t[3])}</span><a class="yts" href="https://www.youtube.com/results?search_query=${encodeURIComponent(`${t[1]} ${t[2].join(' ')}`)}" target="_blank" rel="noopener" aria-label="Find ${esc(t[1])} on YouTube">${icon('yt')}</a></li>`;
-    }).join('')}</ol>` : `<p class="note">Songs show up here after the next data refresh.</p>`;
-  } else {
-    meta = `<span>${plural(m.songs, 'song')} on Spotify</span>${m.youtubeCount ? `<span>${plural(m.youtubeCount, 'video')} on YouTube</span>` : ''}`;
-    art = `<div class="sh-art"><span class="strip" style="height:auto;aspect-ratio:1" aria-hidden="true">${months.map(mm => `<span>${spine(mm).map(c => `<i style="background:${c}"></i>`).join('')}</span>`).join('')}</span></div>`;
-    list = `<p class="note">The full list lives on Spotify and YouTube.</p>`;
+    extra = top.length ? `<p class="rpt"><b>On repeat:</b> ${top.map(([a, n]) => `${esc(a)} <span class="x">×${n}</span>`).join(', ')}</p>` : '';
+    list = m.tracks.length ? trackList(m, t => (where.get(t[0]) || []).filter(k => k !== m.key).map(k => `<button class="chip" type="button" data-act="go" data-k="${k}" data-t="${sid(t[0])}">also in ${esc(byKey.get(k).label)}</button>`).join('') +
+      (c && c.ids.has(t[0]) ? `<button class="chip mid" type="button" data-act="go" data-k="${c.key}" data-t="${sid(t[0])}">in ${esc(c.label)}</button>` : ''))
+      : `<p class="note">Songs show up here after the next data refresh.</p>`;
   }
   const pref = store.get('player') === 'yt' && m.youtube ? 'yt' : 'sp';
   const player = RICH ? `<div class="player"><div class="seg" role="tablist" aria-label="Player"><button type="button" role="tab" data-act="player" data-p="sp" aria-selected="${pref === 'sp'}">Spotify player</button><button type="button" role="tab" data-act="player" data-p="yt" aria-selected="${pref === 'yt'}"${m.youtube ? '' : ' disabled'}>YouTube player</button></div><div class="frame" id="frame"></div></div>`
     : `<p class="note">Embedded Spotify and YouTube players appear on the GitHub Pages version of this site.</p>`;
-  return `<div class="sh-hero">${art}<div><h2 id="sh-title">${esc(m.label)}</h2><p class="meta">${meta}</p><div class="btns">${buttonsFor(m)}</div>${rpt}${RICH ? '<button class="copy" type="button" data-act="copy">Copy link</button>' : ''}</div></div>${player}${list}`;
+  const keepBlock = m.isComp ? extra : '';
+  return `<div class="sh-hero">${art}<div><h2 id="sh-title">${esc(m.label)}</h2><p class="meta">${meta}</p><div class="btns">${buttonsFor(m)}</div>${m.isComp ? '' : extra}${RICH ? '<button class="copy" type="button" data-act="copy">Copy link</button>' : ''}</div></div>${player}${keepBlock}${list}`;
 }
 
 function mountPlayer(m, p) {
   const f = $('#frame'); if (!f) return;
-  f.innerHTML = p === 'yt' && m.youtube
+  const yt = p === 'yt' && m.youtube;
+  f.innerHTML = yt
     ? `<iframe class="yt" title="${esc(m.label)} on YouTube" src="https://www.youtube-nocookie.com/embed/videoseries?list=${sid(m.youtube)}" referrerpolicy="strict-origin-when-cross-origin" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`
     : `<iframe class="sp" title="${esc(m.label)} on Spotify" src="https://open.spotify.com/embed/playlist/${sid(m.spotify)}?utm_source=generator" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" loading="lazy"></iframe>`;
-  document.querySelectorAll('.seg button').forEach(b => b.setAttribute('aria-selected', String(b.dataset.p === (p === 'yt' && m.youtube ? 'yt' : 'sp'))));
+  document.querySelectorAll('.seg button').forEach(b => b.setAttribute('aria-selected', String(b.dataset.p === (yt ? 'yt' : 'sp'))));
 }
 
 function show(k, trackId) {
-  const m = byKey.get(k) || extras.find(x => x.key === k); if (!m) return;
+  const m = find(k); if (!m) return;
   current = k;
   const i = months.findIndex(x => x.key === k);
-  $('#sh-crumb').textContent = i >= 0 ? seasonOf(k).name : 'Bonus playlist';
+  $('#sh-crumb').textContent = i >= 0 ? seasonName(k) : 'Year-end playlist';
   $('#sh-prev').disabled = i <= 0; $('#sh-next').disabled = i < 0 || i >= months.length - 1;
   $('#sh-body').innerHTML = sheetHTML(m);
   if (!dlg.open) { try { dlg.showModal(); } catch (e) { dlg.setAttribute('open', ''); } }
@@ -507,19 +553,19 @@ document.addEventListener('click', e => {
   else if (act === 'next') step(1);
   else if (act === 'go') openFromUI(b.dataset.k, b.dataset.t);
   else if (act === 'q') { $('#q').value = b.dataset.q; search(); }
-  else if (act === 'player') { const m = byKey.get(current) || extras.find(x => x.key === current); if (m) { store.set('player', b.dataset.p); mountPlayer(m, b.dataset.p); } }
+  else if (act === 'player') { const m = find(current); if (m) { store.set('player', b.dataset.p); mountPlayer(m, b.dataset.p); } }
   else if (act === 'copy') {
     const url = location.href.split('#')[0] + '#' + slugOf(current);
     Promise.resolve().then(() => navigator.clipboard.writeText(url)).then(() => { b.textContent = 'Link copied'; }, () => { b.textContent = 'Copy failed: the link is in the address bar'; });
     setTimeout(() => { if (b.isConnected) b.textContent = 'Copy link'; }, 2400);
   }
-  else if (b.dataset.k && (b.classList.contains('tile') || b.classList.contains('bar') || b.classList.contains('extra'))) openFromUI(b.dataset.k);
+  else if (b.dataset.k && (b.classList.contains('tile') || b.classList.contains('bar') || b.classList.contains('comp'))) openFromUI(b.dataset.k);
 });
 
 fetch('data/playlists.json', {cache: 'no-cache'})
   .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
   .then(init)
-  .catch(err => { $('#seasons').innerHTML = `<p class="err">The playlist data didn't load (${esc(err.message)}). This page reads data/playlists.json, so it needs to be served from a web server such as GitHub Pages rather than opened as a file.</p>`; });
+  .catch(err => { $('#years').innerHTML = `<p class="err">The playlist data didn't load (${esc(err.message)}). This page reads data/playlists.json, so it needs to be served from a web server such as GitHub Pages rather than opened as a file.</p>`; });
 }
 </script>
 </body>

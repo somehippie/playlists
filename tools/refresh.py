@@ -1,27 +1,30 @@
 #!/usr/bin/env python3
-"""Refresh data/playlists.json from the public Spotify and YouTube pages.
+"""Refresh data/playlists.json from the public Spotify pages.
 
 Run from the repo root:
 
     python tools/refresh.py
 
-What it does, for every month in data/playlists.json:
-  * re-reads the Spotify playlist (name, songs, cover, cover colour)
-  * recomputes the 8x8 mosaic colours when the cover changed (needs Pillow: pip install pillow)
-  * updates the YouTube video count when the month has a YouTube playlist
-A playlist that can't be fetched keeps its old data. Nothing is ever deleted.
+For every month in data/playlists.json it re-reads the Spotify playlist (name, songs, cover,
+cover colour) and recomputes the 8x8 mosaic colours when the cover changed (that part needs
+Pillow: pip install pillow). A playlist that can't be fetched keeps its old data. Nothing is
+ever deleted.
 
 Adding a month: append an entry to "months" with just a key and links, for example
     {"key": "2026-12", "spotify": "https://open.spotify.com/playlist/...", "youtube": "https://www.youtube.com/playlist?list=..."}
-then run this script. The GitHub Action in .github/workflows runs it for you on every change
-to data/playlists.json, and every Monday.
+Adding a year-end compilation: append to "compilations"
+    {"key": "midyears-26-27", "from": "2026-06", "to": "2027-05", "spotify": "...", "youtube": "..."}
+The GitHub Action in .github/workflows runs this script on every change to data/playlists.json
+and every Monday.
 
-Limit: Spotify's embed page lists the first 100 songs of a playlist, so a month with more than
-100 songs would show only its first 100 here (the embedded player still has them all).
+Limit: Spotify's embed page lists only the first 100 songs of a playlist. Monthly playlists are
+well under that. A compilation's list is only replaced when Spotify returns all of it (fewer than
+100 songs); a longer one keeps the list already in the file.
 """
 import datetime
 import io
 import json
+import os
 import pathlib
 import re
 import sys
@@ -32,6 +35,7 @@ ROOT = pathlib.Path(__file__).resolve().parent.parent
 DATA = ROOT / "data" / "playlists.json"
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0 Safari/537.36"
 NBSP = " "
+EMBED_CAP = 100
 
 
 def get(url, tries=3):
@@ -73,13 +77,14 @@ def parse_embed(html):
             continue
         # Spotify separates artists with "," + no-break space; a plain ", " belongs to a name.
         artists = [a.strip() for a in (t.get("subtitle") or "").split("," + NBSP) if a.strip()]
-        tracks.append([tid, t.get("title") or "", artists, round((t.get("duration") or 0) / 1000)])
+        seconds = (int(t.get("duration") or 0) + 500) // 1000  # round half up, like the browser
+        tracks.append([tid, t.get("title") or "", artists, seconds])
     sources = sorted((entity.get("coverArt") or {}).get("sources") or [], key=lambda s: s.get("width") or 0)
     big = sources[-1]["url"] if sources else ""
     small = next((s["url"] for s in sources if (s.get("width") or 0) >= 64), big)
     bg = (entity.get("visualIdentity") or {}).get("backgroundBase") or {}
     rgb = [bg.get("red", 83), bg.get("green", 83), bg.get("blue", 83)]
-    return {"label": entity.get("name") or entity.get("title") or "", "tracks": tracks,
+    return {"name": entity.get("name") or entity.get("title") or "", "tracks": tracks,
             "cover": big, "cover_small": small, "rgb": rgb}
 
 
@@ -95,34 +100,33 @@ def pixels(image_bytes):
                 for x in range(gx * 8, gx * 8 + 8):
                     pr, pg, pb = px[x, y]
                     r, g, b = r + pr, g + pg, b + pb
-            out.append("%02x%02x%02x" % (round(r / 64), round(g / 64), round(b / 64)))
+            out.append("%02x%02x%02x" % ((r + 32) // 64, (g + 32) // 64, (b + 32) // 64))
     return "".join(out)
-
-
-def youtube_count(list_id):
-    html = get(f"https://www.youtube.com/playlist?list={list_id}")
-    m = re.search(rb'"(\d[\d,]*) videos?"', html)
-    return int(m.group(1).replace(b",", b"")) if m else None
 
 
 def dump(data):
     """Readable, diff-friendly JSON: one song per line."""
+    lists = ("compilations", "months")
     out = ["{"]
-    for k in [k for k in data if k != "months"]:
+    for k in [k for k in data if k not in lists]:
         out.append(f"  {json.dumps(k)}: {json.dumps(data[k], ensure_ascii=False)},")
-    out.append('  "months": [')
-    months = sorted(data.get("months", []), key=lambda m: m.get("key", ""))
-    for i, m in enumerate(months):
-        out.append("    {")
-        for k in [k for k in m if k != "tracks"]:
-            out.append(f"      {json.dumps(k)}: {json.dumps(m[k], ensure_ascii=False)},")
-        tracks = m.get("tracks") or []
-        out.append('      "tracks": [')
-        for j, t in enumerate(tracks):
-            out.append("        " + json.dumps(t, ensure_ascii=False) + ("," if j < len(tracks) - 1 else ""))
-        out.append("      ]")
-        out.append("    }" + ("," if i < len(months) - 1 else ""))
-    out.append("  ]")
+    present = [k for k in lists if k in data]
+    for n, name in enumerate(present):
+        items = data[name]
+        if name == "months":
+            items = sorted(items, key=lambda m: m.get("key", ""))
+        out.append(f"  {json.dumps(name)}: [")
+        for i, m in enumerate(items):
+            out.append("    {")
+            for k in [k for k in m if k != "tracks"]:
+                out.append(f"      {json.dumps(k)}: {json.dumps(m[k], ensure_ascii=False)},")
+            tracks = m.get("tracks") or []
+            out.append('      "tracks": [')
+            for j, t in enumerate(tracks):
+                out.append("        " + json.dumps(t, ensure_ascii=False) + ("," if j < len(tracks) - 1 else ""))
+            out.append("      ]")
+            out.append("    }" + ("," if i < len(items) - 1 else ""))
+        out.append("  ]" + ("," if n < len(present) - 1 else ""))
     out.append("}")
     return "\n".join(out) + "\n"
 
@@ -136,33 +140,38 @@ def refresh(data, log):
             obj[key] = value
             changed = True
 
+    def links(item, label):
+        sid = spotify_id(item.get("spotify"))
+        if not sid:
+            log(f"{label}: no Spotify playlist link")
+            return None
+        setv(item, "spotify", sid)
+        if item.get("youtube"):
+            yid = youtube_id(item["youtube"])
+            if yid:
+                setv(item, "youtube", yid)
+            else:
+                log(f"{label}: couldn't read the YouTube link, left it as is")
+        try:
+            return parse_embed(get(f"https://open.spotify.com/embed/playlist/{sid}"))
+        except Exception as e:  # keep old data
+            log(f"{label}: Spotify didn't answer ({e}); kept the old data")
+            return None
+
     for m in data.get("months", []):
         key = m.get("key", "")
         if not re.fullmatch(r"\d{4}-(0[1-9]|1[0-2])", key):
             log(f"Skipped a month without a YYYY-MM key: {json.dumps(m)[:80]}")
             continue
-        sid = spotify_id(m.get("spotify"))
-        if not sid:
-            log(f"{key}: no Spotify playlist link")
-            continue
-        setv(m, "spotify", sid)
-        if m.get("youtube"):
-            yid = youtube_id(m["youtube"])
-            if yid:
-                setv(m, "youtube", yid)
-            else:
-                log(f"{key}: couldn't read the YouTube link, left it as is")
-        try:
-            info = parse_embed(get(f"https://open.spotify.com/embed/playlist/{sid}"))
-        except Exception as e:  # keep old data
-            log(f"{key}: Spotify didn't answer ({e}); kept the old data")
+        info = links(m, key)
+        if not info:
             continue
         if not info["tracks"] and m.get("tracks"):
             log(f"{key}: Spotify returned no songs; kept the old list")
         else:
             setv(m, "tracks", info["tracks"])
-        if info["label"]:
-            setv(m, "label", info["label"])
+        if info["name"]:
+            setv(m, "name", info["name"])
         setv(m, "rgb", info["rgb"])
         has_pixels = bool(re.fullmatch(r"[0-9a-f]{384}", m.get("pixels") or ""))
         if info["cover"] and (m.get("cover") != info["cover"] or not has_pixels):
@@ -174,21 +183,20 @@ def refresh(data, log):
                 setv(m, "cover", info["cover"])
             except Exception as e:
                 log(f"{key}: couldn't read the cover image ({e})")
-        if m.get("youtube"):
-            try:
-                n = youtube_count(m["youtube"])
-                if n is not None:
-                    setv(m, "youtubeCount", n)
-            except Exception as e:
-                log(f"{key}: YouTube didn't answer ({e})")
-    for x in data.get("extras", []):
-        if x.get("youtube"):
-            try:
-                n = youtube_count(youtube_id(x["youtube"]) or x["youtube"])
-                if n is not None:
-                    setv(x, "youtubeCount", n)
-            except Exception as e:
-                log(f"{x.get('key')}: YouTube didn't answer ({e})")
+
+    for c in data.get("compilations", []):
+        label = c.get("name") or c.get("key") or "compilation"
+        info = links(c, label)
+        if not info:
+            continue
+        if info["name"]:
+            setv(c, "name", info["name"])
+        if 0 < len(info["tracks"]) < EMBED_CAP:
+            setv(c, "tracks", info["tracks"])
+            setv(c, "songs", len(info["tracks"]))
+        elif info["tracks"] and not c.get("tracks"):
+            setv(c, "tracks", info["tracks"])
+            log(f"{label}: Spotify only shows the first {EMBED_CAP} songs here; the rest of the list needs a one-time manual update")
     return changed
 
 
@@ -199,7 +207,7 @@ def main():
     if changed:
         data["updated"] = datetime.date.today().isoformat()
         DATA.write_text(dump(data), encoding="utf-8")
-    prefix = "::warning::" if "GITHUB_ACTIONS" in __import__("os").environ else "warning: "
+    prefix = "::warning::" if "GITHUB_ACTIONS" in os.environ else "warning: "
     for n in notes:
         print(prefix + n)
     print("Updated data/playlists.json" if changed else "Already up to date")
