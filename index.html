@@ -433,7 +433,7 @@ function renderCalendar() {
   const last = months.at(-1).key, y0 = yearOf(months[0].key), y1 = yearOf(last);
   const nextName = y => { const m = comps.length && comps.at(-1).label.match(/^(.*?)(\d\d)'(\d\d)$/); return m ? `${m[1]}${yy(y)}'${yy(y + 1)}` : `Year-end ${yearLabel(y)}`; };
   let html = '';
-  for (let y = y0; y <= y1; y++) {
+  for (let y = y1; y >= y0; y--) { // newest year first
     const keys = Array.from({length: 12}, (_, i) => addMonths(yearFirst(y), i));
     const n = keys.reduce((a, k) => a + (byKey.get(k)?.tracks.length || 0), 0);
     const c = comps.find(c => yearOf(c.from) === y);
