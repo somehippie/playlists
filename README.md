@@ -4,7 +4,7 @@ A calendar of my monthly playlists, June 2025 onward, on Spotify and YouTube.
 
 **Live:** https://somehippie.github.io/playlists/
 
-Years run June to May. Each year is four seasons of monthly playlists, closed by that year's year-end compilation (Midyears 25'26 for June 2025 to May 2026). Each month is a tile made from its Spotify cover, averaged down to 8×8 colours. Tap one for the songs, the Spotify and YouTube players, links to every track, and which songs made the year-end cut. Below the calendar: search across every song, songs per month, the artists who keep coming back, and the songs that made more than one month.
+Years run June to May. Each year is four seasons of monthly playlists, closed by that year's year-end compilation (Midyears 25'26 for June 2025 to May 2026). Each month is a tile made from its Spotify cover, averaged down to 8×8 colours. Tap one for the songs, links to every track, which songs made the year-end cut, and the same month a year earlier. Play a whole month or any single song in the player bar at the bottom, which keeps going while you browse. There's a light/dark switch next to the profile links; it follows your system until you pick the other one. Below the calendar: search across every song, songs per month, the artists who keep coming back, and the songs that made more than one month.
 
 ## What's in the repo
 
