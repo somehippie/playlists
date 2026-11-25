@@ -14,6 +14,9 @@ Adding a month: append an entry to "months" with just a key and links, for examp
     {"key": "2026-12", "spotify": "https://open.spotify.com/playlist/...", "youtube": "https://www.youtube.com/playlist?list=..."}
 Adding a year-end compilation: append to "compilations"
     {"key": "midyears-26-27", "from": "2026-06", "to": "2027-05", "spotify": "...", "youtube": "..."}
+and, once it has a cover photo, put the photo in covers/ and add
+    "cover": "covers/midyears-26-27.webp", "coverAlt": "what the photo shows"
+(the script works out the photo's colours).
 The GitHub Action in .github/workflows runs this script on every change to data/playlists.json
 and every Monday.
 
@@ -186,6 +189,7 @@ def refresh(data, log):
 
     for c in data.get("compilations", []):
         label = c.get("name") or c.get("key") or "compilation"
+        cover_colours(c, label, setv, log)
         info = links(c, label)
         if not info:
             continue
@@ -198,6 +202,30 @@ def refresh(data, log):
             setv(c, "tracks", info["tracks"])
             log(f"{label}: Spotify only shows the first {EMBED_CAP} songs here; the rest of the list needs a one-time manual update")
     return changed
+
+
+def cover_colours(c, label, setv, log):
+    """A compilation can have its own cover photo in the repo ("cover": "covers/....webp").
+    Keep its 8x8 colours (they tint its page) in step with that file. Tiny differences between
+    Pillow versions are ignored, so the file only changes when the photo does."""
+    cover = c.get("cover") or ""
+    if not cover or re.match(r"[a-z]+:", cover):
+        return
+    path = (ROOT / cover).resolve()
+    if ROOT not in path.parents or not path.is_file():
+        log(f"{label}: the cover file {cover} isn't in the repo")
+        return
+    try:
+        new = pixels(path.read_bytes())
+    except ImportError:
+        log("Pillow isn't installed (pip install pillow), so cover colours weren't refreshed")
+        return
+    except Exception as e:
+        log(f"{label}: couldn't read {cover} ({e})")
+        return
+    old = c.get("pixels") or ""
+    if not re.fullmatch(r"[0-9a-f]{384}", old) or max(abs(int(new[i:i + 2], 16) - int(old[i:i + 2], 16)) for i in range(0, 384, 2)) > 3:
+        setv(c, "pixels", new)
 
 
 def main():
