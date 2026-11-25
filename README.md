@@ -1,4 +1,4 @@
-# Monthly rotation
+# Monthly Rotation - Music Calendar
 
 A calendar of my monthly playlists, June 2025 onward, on Spotify and YouTube.
 

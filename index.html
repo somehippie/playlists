@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Monthly Rotation</title>
+<title>Monthly Rotation - Music Calendar</title>
 <meta name="description" content="somehippie's playlist calendar: a new playlist every month since June 2025, on Spotify and YouTube.">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Monthly rotation">
+<meta property="og:title" content="Monthly Rotation - Music Calendar">
 <meta property="og:description" content="A new playlist every month since June 2025, on Spotify and YouTube.">
 <meta property="og:image" content="https://somehippie.github.io/playlists/og.png">
 <meta name="twitter:card" content="summary_large_image">
@@ -228,7 +228,7 @@ footer{border-top:1px solid var(--line)}
 <header class="band top">
   <div class="wrap head">
     <div>
-      <h1>Monthly rotation</h1>
+      <h1>Monthly Rotation - Music Calendar</h1>
       <p class="lede">somehippie's playlist calendar: a new playlist every month since June 2025, on Spotify and YouTube. Tap a month to see the songs.</p>
     </div>
     <nav class="pills" aria-label="Profiles and settings">
@@ -686,7 +686,7 @@ document.addEventListener('click', e => {
     if (t) play('sp', 'track', t[0], {k: m.key, track: sid(t[0]), title: t[1], sub: `${t[2].join(', ')}, from ${m.label}`, art: m.isComp ? compArt(m) : mosaic(m)});
   }
   else if (act === 'share') {
-    const url = location.href.split('#')[0] + '#' + slugOf(current), title = m ? `${m.label} on Monthly rotation` : 'Monthly rotation';
+    const url = location.href.split('#')[0] + '#' + slugOf(current), title = m ? `${m.label} on Monthly Rotation - Music Calendar` : 'Monthly Rotation - Music Calendar';
     const done = txt => { b.textContent = txt; setTimeout(() => { if (b.isConnected) b.textContent = navigator.share ? 'Share' : 'Copy link'; }, 2400); };
     if (navigator.share) navigator.share({title, url}).catch(() => {});
     else Promise.resolve().then(() => navigator.clipboard.writeText(url)).then(() => done('Link copied'), () => done('Copy failed: the link is in the address bar'));
