@@ -433,17 +433,18 @@ function renderCalendar() {
   const last = months.at(-1).key, y0 = yearOf(months[0].key), y1 = yearOf(last);
   const nextName = y => { const m = comps.length && comps.at(-1).label.match(/^(.*?)(\d\d)'(\d\d)$/); return m ? `${m[1]}${yy(y)}'${yy(y + 1)}` : `Year-end ${yearLabel(y)}`; };
   let html = '';
+  const next = addMonths(last, 1); // show one upcoming month, nothing further ahead
   for (let y = y1; y >= y0; y--) { // newest year first
     const keys = Array.from({length: 12}, (_, i) => addMonths(yearFirst(y), i));
     const n = keys.reduce((a, k) => a + (byKey.get(k)?.tracks.length || 0), 0);
     const c = comps.find(c => yearOf(c.from) === y);
-    const seasons = [0, 3, 6, 9].map(i => keys.slice(i, i + 3)).map(ks => {
+    const seasons = [0, 3, 6, 9].map(i => keys.slice(i, i + 3).filter(k => k <= next)).filter(ks => ks.length).map(ks => {
       const sn = ks.reduce((a, k) => a + (byKey.get(k)?.tracks.length || 0), 0), name = seasonName(ks[0]);
       return `<section class="season" aria-label="${esc(name)}"><h3>${esc(name)}<small>${sn ? plural(sn, 'song') : ''}</small></h3><div class="months">${ks.map(k => tileHTML(k, last)).join('')}</div></section>`;
     }).join('');
     const end = c ? `<button class="comp" type="button" data-k="${c.key}" aria-label="${esc(c.label)}, year-end playlist, ${plural(c.songs, 'song')}">${compArt(c)}<span><span class="cn">${esc(c.label)}</span><span class="cs">Year-end playlist, ${plural(c.songs, 'song')}</span></span></button>`
-      : comps.length ? `<div class="comp ghostc" aria-hidden="true"><span class="strip"></span><span><span class="cn">${esc(nextName(y))}</span><span class="cs">Year-end playlist, after ${labelFor(keys[11])}</span></span></div>` : '';
-    html += `<section class="year" aria-labelledby="y${y}"><div class="yhead"><h2 id="y${y}"><span class="yn">${yearLabel(y)}</span><span class="yr">${labelFor(keys[0])}–${labelFor(keys[11])}</span></h2><span class="ys">${plural(n, 'song')}${keys[11] > last ? ' so far' : ''}</span></div><div class="ygrid${end ? '' : ' nocomp'}">${seasons}${end}</div></section>`;
+      : comps.length && keys[11] <= next ? `<div class="comp ghostc" aria-hidden="true"><span class="strip"></span><span><span class="cn">${esc(nextName(y))}</span><span class="cs">Year-end playlist, after ${labelFor(keys[11])}</span></span></div>` : '';
+    html += `<section class="year" aria-labelledby="y${y}"><div class="yhead"><h2 id="y${y}"><span class="yn">${yearLabel(y)}</span><span class="yr">${labelFor(keys[0])}–${labelFor(keys[11] > next ? next : keys[11])}</span></h2><span class="ys">${plural(n, 'song')}${keys[11] > last ? ' so far' : ''}</span></div><div class="ygrid${end ? '' : ' nocomp'}">${seasons}${end}</div></section>`;
   }
   $('#years').innerHTML = html;
 }
