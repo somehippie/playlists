@@ -20,7 +20,7 @@
 <style>
 /* VOICE everyday and personal: a music lover's crate, confident and unfussy
    IDEA a wall planner of record sleeves; each month's Spotify cover re-set as an 8x8 tile mosaic
-   PICTURE each year (June to May) as four seasons of mosaic sleeves, closed by its year-end compilation on its own cover photo
+   PICTURE the years newest first, each led by its year-end compilation on its own cover photo, then its seasons of mosaic sleeves, newest first
    COLOUR white paper by day, deep violet at night; the covers bring every other colour, and a month's page takes its cover's colour; sticker yellow marks the latest
    TYPE Archivo condensed 800 for months and titles, Archivo 400 for text
    LAYOUT laptop: a year is a 2x2 block of seasons with the year-end playlist standing tall at its right; 720px: the compilation drops below; phone: one season a row; a player bar docks at the bottom */
@@ -56,9 +56,10 @@ h1{font:800 clamp(44px,7vw,76px)/.95 var(--f);font-stretch:72%;letter-spacing:-.
 .years{display:grid;gap:clamp(44px,5vw,72px)}
 .yhead{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 20px;margin-bottom:18px}
 .yhead h2{display:flex;flex-wrap:wrap;align-items:baseline;gap:2px 16px;margin:0;font-weight:400}
+.upnext{margin-right:auto;padding:5px 12px;border:1.5px dashed var(--line);border-radius:999px;color:var(--mute);font-size:14px;white-space:nowrap}
 .yn{font:800 clamp(38px,4.8vw,54px)/1 var(--f);font-stretch:72%;letter-spacing:-.02em}
 .yr,.ys{color:var(--mute);font-size:16px;white-space:nowrap}
-.ygrid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr)) minmax(0,.72fr);gap:30px 28px}
+.ygrid{display:grid;grid-template-columns:minmax(0,.72fr) repeat(2,minmax(0,1fr));gap:30px 28px}
 .ygrid.nocomp{grid-template-columns:repeat(2,minmax(0,1fr))}
 .season h3{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin:0 0 12px;padding-bottom:8px;border-bottom:1.5px solid var(--ink);font:750 16px/1.2 var(--f)}
 .season h3 small{font-weight:400;font-size:13px;color:var(--mute);white-space:nowrap}
@@ -73,7 +74,7 @@ h1{font:800 clamp(44px,7vw,76px)/.95 var(--f);font-stretch:72%;letter-spacing:-.
 .ghost .mos{background:none;border:1.5px dashed var(--line)}
 .ghost .tl{color:var(--mute)}
 .stk{position:absolute;top:-10px;right:-8px;display:grid;place-items:center;width:52px;height:52px;border-radius:50%;background:var(--stk);color:var(--stk-ink);font:800 13px/1 var(--f);font-stretch:85%;transform:rotate(12deg);box-shadow:0 2px 0 rgba(0,0,0,.18);pointer-events:none}
-.comp{grid-column:3;grid-row:1/span 2;display:flex;flex-direction:column;justify-content:space-between;gap:14px;padding:14px;border:1.5px solid var(--ink);border-radius:14px;background:var(--soft);text-align:left;cursor:pointer}
+.comp{grid-column:1;grid-row:1/span 2;display:flex;flex-direction:column;justify-content:space-between;gap:14px;padding:14px;border:1.5px solid var(--ink);border-radius:14px;background:var(--soft);text-align:left;cursor:pointer}
 .comp:hover{background:var(--chip)}
 .strip{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:1px;height:72px;border-radius:8px;overflow:hidden;background:var(--grout)}
 .strip span{display:grid;grid-template-rows:repeat(8,minmax(0,1fr))}
@@ -82,9 +83,6 @@ h1{font:800 clamp(44px,7vw,76px)/.95 var(--f);font-stretch:72%;letter-spacing:-.
 .cv{display:block;width:100%;aspect-ratio:1;object-fit:cover;border-radius:8px;background:var(--line)}
 .cn{display:block;font:800 clamp(24px,2.4vw,30px)/1.05 var(--f);font-stretch:74%;letter-spacing:-.01em}
 .cs{display:block;margin-top:4px;color:var(--mute);font-size:14px}
-.comp.ghostc{border:1.5px dashed var(--line);background:none;cursor:default}
-.comp.ghostc .strip{background:none;border:1.5px dashed var(--line)}
-.comp.ghostc .cn{color:var(--mute)}
 .h{font:800 clamp(30px,4.4vw,46px)/1.05 var(--f);font-stretch:74%;letter-spacing:-.02em;margin:0;text-wrap:balance;max-width:20em}
 .sub{margin:10px 0 0;color:var(--mute);max-width:44em}
 .find .row{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:16px 32px}
@@ -209,7 +207,7 @@ footer{border-top:1px solid var(--line)}
 .dock[data-src=yt] .dk-embed iframe{width:min(100%,178px);height:100px}
 @media (max-width:1000px){.ygrid{grid-template-columns:repeat(2,minmax(0,1fr))}.comp{grid-column:1/-1;grid-row:auto;flex-direction:row;align-items:center;justify-content:flex-start;gap:18px}.comp .strip,.comp .cv{width:min(40%,200px);flex:none}}
 @media (max-width:640px){.sh-hero{grid-template-columns:minmax(0,1fr);gap:20px;padding:18px 16px}.sh-art{width:min(100%,300px)}.tracks{padding:0 16px 24px}.note{margin:0 16px 16px}.recap{margin:0 16px 18px}.rfigs{grid-template-columns:repeat(2,minmax(0,1fr))}.figs{grid-template-columns:repeat(2,minmax(0,1fr))}.figs div{padding-bottom:12px}}
-@media (max-width:600px){.ygrid{grid-template-columns:minmax(0,1fr);gap:28px}.comp .strip,.comp .cv{width:44%}.keep{padding:0 16px 18px}#sheet{top:0;width:100%;max-width:100%;height:calc(100% - var(--dock));max-height:none;border:0;border-radius:0}.bar .v{display:none}.bar.keep .v{display:block}.tracks li{grid-template-columns:2.2em minmax(0,1fr) 44px}.tracks .du{display:none}.d1{width:5px;height:5px}.d2{width:7px;height:7px}.d3{width:9px;height:9px}.dock{bottom:0;width:100%;border-radius:16px 16px 0 0;grid-template-columns:minmax(0,1fr) 44px;padding:8px 8px calc(8px + env(safe-area-inset-bottom,0px))}.dk-art,.dk-meta{display:none}.dock[data-src=yt] .dk-embed iframe{width:160px;height:90px}}
+@media (max-width:600px){.ygrid,.ygrid.nocomp{grid-template-columns:minmax(0,1fr);gap:28px}.comp .strip,.comp .cv{width:44%}.keep{padding:0 16px 18px}#sheet{top:0;width:100%;max-width:100%;height:calc(100% - var(--dock));max-height:none;border:0;border-radius:0}.bar .v{display:none}.bar.keep .v{display:block}.tracks li{grid-template-columns:2.2em minmax(0,1fr) 44px}.tracks .du{display:none}.d1{width:5px;height:5px}.d2{width:7px;height:7px}.d3{width:9px;height:9px}.dock{bottom:0;width:100%;border-radius:16px 16px 0 0;grid-template-columns:minmax(0,1fr) 44px;padding:8px 8px calc(8px + env(safe-area-inset-bottom,0px))}.dk-art,.dk-meta{display:none}.dock[data-src=yt] .dk-embed iframe{width:160px;height:90px}}
 @media (prefers-reduced-motion:reduce){.mos,.sh-art img{transition:none}.mos.big i{animation:none}}
 </style>
 </head>
@@ -430,21 +428,23 @@ function tileHTML(k, last) {
 }
 
 function renderCalendar() {
-  const last = months.at(-1).key, y0 = yearOf(months[0].key), y1 = yearOf(last);
+  const last = months.at(-1).key, y0 = yearOf(months[0].key), y1 = yearOf(last), next = addMonths(last, 1);
   const nextName = y => { const m = comps.length && comps.at(-1).label.match(/^(.*?)(\d\d)'(\d\d)$/); return m ? `${m[1]}${yy(y)}'${yy(y + 1)}` : `Year-end ${yearLabel(y)}`; };
+  // what's coming: next month, plus a year-end playlist that's due and not made yet
+  const due = comps.length ? [y1, y1 - 1].filter(y => y >= y0 && !comps.some(c => yearOf(c.from) === y) && addMonths(yearFirst(y), 11) <= next).map(nextName) : [];
+  const upNext = `<span class="upnext">Up next: ${[labelFor(next), ...due].map(esc).join(' and ')}</span>`;
   let html = '';
-  const next = addMonths(last, 1); // show one upcoming month, nothing further ahead
   for (let y = y1; y >= y0; y--) { // newest year first
     const keys = Array.from({length: 12}, (_, i) => addMonths(yearFirst(y), i));
     const n = keys.reduce((a, k) => a + (byKey.get(k)?.tracks.length || 0), 0);
     const c = comps.find(c => yearOf(c.from) === y);
-    const seasons = [0, 3, 6, 9].map(i => keys.slice(i, i + 3).filter(k => k <= next)).filter(ks => ks.length).map(ks => {
-      const sn = ks.reduce((a, k) => a + (byKey.get(k)?.tracks.length || 0), 0), name = seasonName(ks[0]);
+    const seasons = [9, 6, 3, 0].map(i => [seasonName(keys[i]), keys.slice(i, i + 3).filter(k => k <= last).reverse()]).filter(([, ks]) => ks.length).map(([name, ks]) => {
+      const sn = ks.reduce((a, k) => a + (byKey.get(k)?.tracks.length || 0), 0);
       return `<section class="season" aria-label="${esc(name)}"><h3>${esc(name)}<small>${sn ? plural(sn, 'song') : ''}</small></h3><div class="months">${ks.map(k => tileHTML(k, last)).join('')}</div></section>`;
     }).join('');
-    const end = c ? `<button class="comp" type="button" data-k="${c.key}" aria-label="${esc(c.label)}, year-end playlist, ${plural(c.songs, 'song')}">${compArt(c)}<span><span class="cn">${esc(c.label)}</span><span class="cs">Year-end playlist, ${plural(c.songs, 'song')}</span></span></button>`
-      : comps.length && keys[11] <= next ? `<div class="comp ghostc" aria-hidden="true"><span class="strip"></span><span><span class="cn">${esc(nextName(y))}</span><span class="cs">Year-end playlist, after ${labelFor(keys[11])}</span></span></div>` : '';
-    html += `<section class="year" aria-labelledby="y${y}"><div class="yhead"><h2 id="y${y}"><span class="yn">${yearLabel(y)}</span><span class="yr">${labelFor(keys[0])}–${labelFor(keys[11] > next ? next : keys[11])}</span></h2><span class="ys">${plural(n, 'song')}${keys[11] > last ? ' so far' : ''}</span></div><div class="ygrid${end ? '' : ' nocomp'}">${seasons}${end}</div></section>`;
+    const comp = c ? `<button class="comp" type="button" data-k="${c.key}" aria-label="${esc(c.label)}, year-end playlist, ${plural(c.songs, 'song')}">${compArt(c)}<span><span class="cn">${esc(c.label)}</span><span class="cs">Year-end playlist, ${plural(c.songs, 'song')}</span></span></button>` : '';
+    const end = keys[11] > last ? last : keys[11], span = end === keys[0] ? labelFor(end) : `${labelFor(keys[0])}–${labelFor(end)}`;
+    html += `<section class="year" aria-labelledby="y${y}"><div class="yhead"><h2 id="y${y}"><span class="yn">${yearLabel(y)}</span><span class="yr">${span}</span></h2>${y === y1 ? upNext : ''}<span class="ys">${plural(n, 'song')}${keys[11] > last ? ' so far' : ''}</span></div><div class="ygrid${comp ? '' : ' nocomp'}">${comp}${seasons}</div></section>`;
   }
   $('#years').innerHTML = html;
 }
