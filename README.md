@@ -4,7 +4,9 @@ A calendar of my monthly playlists, June 2025 onward, on Spotify and YouTube.
 
 **Live:** https://somehippie.github.io/playlists/
 
-Years run June to May and the calendar reads newest first: each year opens with its year-end compilation on its own cover photo (Midyears 25'26 for June 2025 to May 2026), then its seasons and months, latest at the top. A small label next to the newest year says what's coming up next. Each month is a tile made from its Spotify cover, averaged down to 8×8 colours. Tap one for the songs, links to every track, which songs made the year-end cut, and the same month a year earlier. Play a whole month or any single song in the player bar at the bottom, which keeps going while you browse. There's a light/dark switch next to the profile links; it follows your system until you pick the other one. Below the calendar: search across every song, songs per month, the artists who keep coming back, and the songs that made more than one month.
+Each year is pressed as one record at the top of the page: twelve grooves, one per month, from June at the edge to May by the label, each groove coloured from that month's Spotify cover, with the year-end compilation as the label. Drag the arm or tap a groove to pick a month, then play it. [DESIGN.md](DESIGN.md) explains the design and the research behind it.
+
+Years run June to May and the calendar below the record reads newest first: each year opens with its year-end compilation on its own cover photo (Midyears 25'26 for June 2025 to May 2026), then its seasons and months, latest at the top. A small label next to the newest year says what's coming up next. Each month is a tile made from its Spotify cover, averaged down to 8×8 colours. Tap one for the songs, links to every track, which songs made the year-end cut, and the same month a year earlier. Play a whole month or any single song in the player bar at the bottom, which keeps going while you browse. There's a light/dark switch next to the profile links; it follows your system until you pick the other one. Below the calendar: search across every song, songs per month, the artists who keep coming back, and the songs that made more than one month.
 
 ## What's in the repo
 
@@ -15,7 +17,10 @@ Years run June to May and the calendar reads newest first: each year opens with 
 | `covers/` | Cover photos for the year-end compilations |
 | `tools/refresh.py` | Re-reads the playlists from Spotify and updates the data file |
 | `.github/workflows/refresh.yml` | Runs the refresh every Monday and whenever the data file changes |
-| `og.png` | The picture shown when the link is shared |
+| `fonts/` | Archivo, the site's typeface, self-hosted under the SIL Open Font License |
+| `icons/`, `manifest.webmanifest` | The favicon and app icons, so the site can be added to a phone's home screen |
+| `og.jpg` | The picture shown when the link is shared |
+| `DESIGN.md` | How the site looks and why |
 
 ## Add a new month
 
@@ -64,10 +69,12 @@ python tools/refresh.py
 
 ## Make your own
 
-Fork the repo, replace the months in `data/playlists.json` with your playlists (a `key` and links are enough), change `owner` and `links`, edit the two header lines in `index.html`, delete `covers/` and the `cover` lines (or use your own photos), run the refresh, and turn on GitHub Pages (Settings → Pages → Deploy from branch → `main`, `/`).
+Fork the repo, replace the months in `data/playlists.json` with your playlists (a `key` and links are enough), change `owner` and `links`, edit the title and the line under it in `index.html`, delete `covers/` and the `cover` lines (or use your own photos), swap in your own `og.jpg` and icons, run the refresh, and turn on GitHub Pages (Settings → Pages → Deploy from branch → `main`, `/`).
 
 ## Notes
 
-- Song lists come from Spotify's public embed pages, which list the first 100 songs of a playlist. The embedded players always have the full playlist.
-- Music, artwork and trademarks belong to their owners. This site links to and embeds Spotify and YouTube; it doesn't host any audio.
-- Code is MIT licensed. The photo in `covers/` is mine and isn't part of that license.
+Song lists come from Spotify's public embed pages, which list the first 100 songs of a playlist; the embedded players always have the full playlist. A YouTube playlist can be set not to play on other sites, and when one is, its YouTube button opens YouTube instead.
+
+Music, artwork and trademarks belong to their owners. This site links to and embeds Spotify and YouTube; it doesn't host any audio.
+
+Code is MIT licensed. The photo in `covers/` is mine and isn't part of that license. Archivo is by Omnibus-Type and comes with its own license in `fonts/OFL.txt`.
