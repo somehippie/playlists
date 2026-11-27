@@ -785,6 +785,9 @@ async function play(src, kind, id, info) {
 }
 addEventListener('resize', () => { if (!dock.hidden) sizeDock(); });
 const playMonth = m => play('sp', 'playlist', m.spotify, {k: m.key, title: m.label, sub: 'Whole playlist', art: miniDisc(m)});
+// a YouTube playlist can be set not to play on other sites: ask YouTube once per playlist, and open YouTube instead when it can't
+const ytOK = new Map();
+const ytEmbeds = id => { if (!ytOK.has(id)) ytOK.set(id, fetch(`https://www.youtube.com/oembed?format=json&url=${encodeURIComponent(ytList(id))}`, {credentials: 'omit'}).then(r => r.ok, () => true)); return ytOK.get(id); };
 
 // ---------- month and year pages ----------
 const sheet = $('#sheet'), scrim = $('#scrim');
@@ -861,6 +864,12 @@ function show(k, trackId) {
   sheet.scrollTop = 0; markNow();
   const img = sheet.querySelector('.sh-art img');
   if (img) { const on = () => setTimeout(() => img.classList.add('on'), reduce ? 0 : 700); img.addEventListener('load', on, {once: true}); img.addEventListener('error', () => img.remove(), {once: true}); if (img.complete && img.naturalWidth) on(); }
+  const yb = sheet.querySelector('[data-act=play][data-src=yt]');
+  if (yb && m.youtube) ytEmbeds(m.youtube).then(ok => {
+    if (ok || !yb.isConnected) return;
+    sheet.querySelector('.opens a[href*="youtube.com"]')?.remove();
+    yb.outerHTML = `<a class="btn" href="${ytList(m.youtube)}" target="_blank" rel="noopener">${icon('yt')}Open in YouTube</a>`;
+  });
   if (trackId) { const li = document.getElementById('t-' + trackId); if (li) { li.classList.add('hit'); setTimeout(() => li.scrollIntoView({block: 'center', behavior: reduce ? 'auto' : 'smooth'}), 60); } }
   else sheet.querySelector('[data-act=close]').focus({preventScroll: true});
 }
@@ -928,7 +937,7 @@ document.addEventListener('click', e => {
   else if (act === 'cue-play') { const c = byKey.get(cueKey); if (c && RICH) playMonth(c); else if (c) window.open(spList(c.spotify), '_blank', 'noopener'); }
   else if (act === 'cue-open') { if (cueKey) openFromUI(cueKey); }
   else if (act === 'play' && m) {
-    if (b.dataset.src === 'yt' && m.youtube) play('yt', 'playlist', m.youtube, {k: m.key, title: m.label, sub: 'Whole playlist', art: miniDisc(m)});
+    if (b.dataset.src === 'yt' && m.youtube) ytEmbeds(m.youtube).then(ok => ok ? play('yt', 'playlist', m.youtube, {k: m.key, title: m.label, sub: 'Whole playlist', art: miniDisc(m)}) : window.open(ytList(m.youtube), '_blank', 'noopener'));
     else play('sp', 'playlist', m.spotify, {k: m.key, title: m.label, sub: 'Whole playlist', art: miniDisc(m)});
   }
   else if (act === 'track' && m) {
