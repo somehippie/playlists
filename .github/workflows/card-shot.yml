@@ -1,29 +1,27 @@
-name: Card screenshot (temporary)
+name: Helper task (temporary)
 on:
   push:
     branches: [card-shot]
 permissions:
   contents: write
 jobs:
-  shot:
+  task:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: pip install playwright && python -m playwright install --with-deps chromium
-      - name: Take the screenshots
+      - run: pip install playwright pillow && python -m playwright install --with-deps chromium
+      - name: Run the task
         run: |
-          python -m http.server 8000 >/dev/null 2>&1 &
-          sleep 2
-          mkdir -p shots
-          python .github/card_shot.py
-          ls -la shots
-      - name: Save them on this branch
+          mkdir -p out
+          bash .github/task.sh
+          ls -la out
+      - name: Save the output on this branch
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add shots
-          git commit -m "Card screenshots"
+          git add out
+          git commit -m "Task output" || echo "nothing to save"
           git push
